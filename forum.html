@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8" />
+        <title>Socket.io</title>
+        <style>
+            #message_container{
+                position: absolute;
+                left: 300px;
+                margin-right: 40%;
+                margin-top: 2%;
+                margin-left: 0px;
+                margin-bottom: 10;
+                padding-left: 5px;
+                width: 350px;
+                height: 400px;
+                background-color: rgb(59, 194, 33);
+                border-width: 10px;
+                border-top-left-radius: 15px;
+                border-top-right-radius: 15px;
+                border-color: rgba(104, 87, 72, 0.719);
+            };
+            #message_list{
+                padding-top: 0px;
+                padding-bottom: 10px;
+                background: rgb(45, 201, 105);
+            };
+            .entry_zone{
+                margin-left: 40px;
+                margin-top: 20px;
+                border-width: 2px;
+                width: 350px;
+                border: 5px; background: rgb(133, 201, 45);
+            };
+        </style>
+    </head>
+
+    <body>
+        <h1>Communication temps reel avec socket.io !</h1>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            var socket = io();
+                var pseudo = prompt('Quel est votre pseudo ?');
+                socket.emit('send_pseudo', pseudo);
+                document.title = pseudo + ' - ' + document.title;
+
+                send = function(){
+                  var m = document.getElementById("message");
+                   socket.emit("message_chat", m.value);
+                   var p = document.createElement('p');
+                        p.innerText = "Moi: "+ m.value;
+                        document.getElementById('message_list').appendChild(p);
+                        m.value = "";
+                }
+
+                socket.on("message_chat", function(msg){
+                        var p = document.createElement('p');
+                        p.innerText = msg.pseudo+": "+ msg.message;
+                        document.getElementById('message_list').appendChild(p);
+                });
+
+                socket.on('message_info', function(info){
+                    var p = document.createElement('p');
+                        p.innerText = info;
+                        document.getElementById('message_list').appendChild(p);
+                });
+
+        </script>
+        <div id="message_container">
+            <h3>Les messages</h3>
+            <div id="message_list"> </div>
+        </div>
+
+        <div class="entry_zone">
+            <input id="message" placeholder="Votre message..." size="40" autofocus/> <button onclick="send()"> Envoyer</button>
+        </div>
+		<script src="/assets/js/jquery.js"></script>
+    </body>
+</html>
